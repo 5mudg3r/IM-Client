@@ -44,7 +44,7 @@ public class Client extends JFrame {
 			setupStreams();
 			whileChatting();
 		} catch (EOFException eofExc) {
-			showMessage("\n Client ended the connection... ");
+			showMessage("\n Server closed the connection... ");
 		} catch (IOException ioExc) {
 			ioExc.printStackTrace();
 		} finally {
@@ -54,9 +54,9 @@ public class Client extends JFrame {
 
 	// connect to server
 	private void establishConnection() throws IOException {
-		showMessage(" Attempting to connect... \n");
+		showMessage("\n Attempting to connect... ");
 		connection = new Socket(InetAddress.getByName(serverIP), 6789);
-		showMessage(" Connection to " + connection.getInetAddress().getHostName() + " established \n");
+		showMessage("\n Connection to " + connection.getInetAddress().getHostName() + " established ");
 	}
 
 	// setup data streams
@@ -64,7 +64,7 @@ public class Client extends JFrame {
 		output = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
-		showMessage("\n Connection streams established \n");
+		showMessage("\n Connection streams established ");
 	}
 
 	// while chatting
@@ -73,11 +73,11 @@ public class Client extends JFrame {
 		do {
 			try {
 				msg = (String) input.readObject();
-				showMessage("\n " + msg);
+				showMessage(msg);
 			} catch (ClassNotFoundException exc) {
 				showMessage("\n ERROR: Server sent invalid message! ");
 			}
-		} while (!msg.equals("SERVER - END"));
+		} while (!msg.equals("END"));
 	}
 
 	// close streams and sockets, ending connection
@@ -96,9 +96,9 @@ public class Client extends JFrame {
 	// send message to server
 	private void sendMessage(String message) {
 		try {
-			output.writeObject("CLIENT - " + message);
+			output.writeObject(message);
 			output.flush();
-			showMessage("\n CLIENT - " + message);
+			showMessage("\n You - " + message);
 		} catch (IOException exc) {
 			showMessage("\n ERROR: Unable to send message ");
 		}
