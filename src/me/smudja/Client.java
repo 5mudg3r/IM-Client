@@ -44,7 +44,6 @@ public class Client extends JFrame {
 			setupStreams();
 			whileChatting();
 		} catch (EOFException eofExc) {
-			showMessage("\n Server closed the connection... ");
 		} catch (IOException ioExc) {
 			ioExc.printStackTrace();
 		} finally {
@@ -98,7 +97,6 @@ public class Client extends JFrame {
 		try {
 			output.writeObject(message);
 			output.flush();
-			showMessage("\n You - " + message);
 		} catch (IOException exc) {
 			showMessage("\n ERROR: Unable to send message ");
 		}
