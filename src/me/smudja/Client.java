@@ -2,12 +2,16 @@ package me.smudja;
 
 import java.io.*;
 import java.net.*;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
-public class Client extends JFrame {
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 
+public class Client extends Application {
+
+	private String name;
 	private JTextField userText;
 	private JTextArea chatDisplay;
 	private ObjectOutputStream output;
@@ -15,27 +19,43 @@ public class Client extends JFrame {
 	private String msg = "";
 	private String serverIP;
 	private Socket connection;
-
-	// constructor
-	public Client(String host) {
-		super("IM Client");
-		serverIP = host;
-		userText = new JTextField();
-		userText.setEditable(false);
-		userText.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				sendMessage(event.getActionCommand());
-				userText.setText("");
-			}
-		});
-		add(userText, BorderLayout.NORTH);
-
-		chatDisplay = new JTextArea();
-		chatDisplay.setEditable(false);
-		add(new JScrollPane(chatDisplay), BorderLayout.CENTER);
-		setSize(450, 300);
-		setVisible(true);
+	
+	public static void main(String[] args) {
+		launch(args);
 	}
+	
+	@Override
+	public void init() {
+		this.name = "Charlie";
+		this.serverIP = "127.0.0.1";
+	}
+	
+	@Override
+	public void start(Stage primaryStage) {
+		primaryStage.setTitle("IM Client - " + name);
+		
+		FlowPane rootNode = new FlowPane(20,20);
+		
+		primaryStage.setScene(new Scene(rootNode, 450, 300));	
+		
+		primaryStage.show();
+	}
+	
+//	userText = new JTextField();
+//	userText.setEditable(false);
+//	userText.addActionListener(new ActionListener() {
+//		public void actionPerformed(ActionEvent event) {
+//			sendMessage(event.getActionCommand());
+//			userText.setText("");
+//		}
+//	});
+//	add(userText, BorderLayout.NORTH);
+//
+//	chatDisplay = new JTextArea();
+//	chatDisplay.setEditable(false);
+//	add(new JScrollPane(chatDisplay), BorderLayout.CENTER);
+//	setSize(450, 300);
+//	setVisible(true);
 
 	// start client functionality
 	public void startClient() {
