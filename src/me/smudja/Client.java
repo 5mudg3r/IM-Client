@@ -2,18 +2,19 @@ package me.smudja;
 
 import java.io.*;
 import java.net.*;
-import javax.swing.*;
-
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 public class Client extends Application {
 
 	private String name;
-	private JTextField userText;
-	private JTextArea chatDisplay;
+	private TextField userText;
+	private ListView<String> chatDisplay;
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private String msg = "";
@@ -34,11 +35,29 @@ public class Client extends Application {
 	public void start(Stage primaryStage) {
 		primaryStage.setTitle("IM Client - " + name);
 		
-		FlowPane rootNode = new FlowPane(20,20);
+		FlowPane rootNode = new FlowPane(10,10);
+		rootNode.setAlignment(Pos.CENTER);
 		
-		primaryStage.setScene(new Scene(rootNode, 450, 300));	
+		primaryStage.setScene(new Scene(rootNode, 450, 300));
+		
+		ListView<String> chatDisplay = new ListView<String>();
+		chatDisplay.setPrefSize(430, 240);
+		chatDisplay.setEditable(false);
+		
+		TextField userText = new TextField();
+		userText.setPrefSize(430, 30);
+		userText.setEditable(true);
+		userText.setOnAction( (ae) -> {
+			sendMessage(userText.getText());
+			userText.setText("");
+		});
+		
+		rootNode.getChildren().addAll(chatDisplay, userText);
+		this.chatDisplay = chatDisplay;
+		this.userText = userText;
 		
 		primaryStage.show();
+		startClient();
 	}
 	
 //	userText = new JTextField();
@@ -62,7 +81,7 @@ public class Client extends Application {
 		try {
 			establishConnection();
 			setupStreams();
-			whileChatting();
+			//whileChatting();
 		} catch (EOFException eofExc) {
 		} catch (IOException ioExc) {
 			ioExc.printStackTrace();
@@ -124,19 +143,12 @@ public class Client extends Application {
 
 	// show message
 	private void showMessage(final String message) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				chatDisplay.append(message);
-			}
-		});
+		chatDisplay.getItems().add(message);
+		chatDisplay.refresh();
 	}
 	
 	// changes whether user is able to type in chat box
 	private void ableToType(final Boolean state) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				userText.setEditable(state);
-			}
-		});
+		userText.setEditable(state);
 	}
 }
